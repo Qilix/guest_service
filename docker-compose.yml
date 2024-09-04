@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+    nginx:
+        image: nginx:1.20
+        restart: always
+        ports:
+            - "80:80"
+        volumes:
+            - ./:/var/www/php
+            - ./.docker/nginx/conf.d:/etc/nginx/conf.d
+            - ./.docker/nginx/logs:/var/logs/
+        depends_on:
+            - php
+
+    php:
+        build: ./.docker/php
+        restart: always
+        working_dir: /var/www/php
+        volumes:
+            - .:/var/www/php
+        depends_on:
+            - mysql
+
+    mysql:
+        image: mysql
+        restart: always
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+        volumes:
+            - mysql-data:/var/lib/mysql
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        depends_on:
+            - mysql
+        links:
+            - mysql:db
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+        ports:
+            - "8080:80"
+        volumes:
+            - pma-data:/var/lib/pma
+
+volumes:
+    mysql-data:
+    pma-data:
