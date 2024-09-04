@@ -10,7 +10,7 @@ class GuestRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'second_name' => 'nullable',
+            'second_name' => 'required',
             'email' => 'nullable|email',
             'phone' => 'required|numeric',
             'country' => 'nullable'
